@@ -1,6 +1,6 @@
 # PyScheduler — Orquestrador de Jobs Python
 
-Sistema MVP SaaS profissional para agendamento e orquestração de scripts Python, construído com FastAPI, APScheduler, React e Supabase (PostgreSQL).
+Sistema para agendamento e orquestração de scripts Python, construído com FastAPI, APScheduler, React e Supabase (PostgreSQL).
 
 ![Dashboard](https://img.shields.io/badge/status-MVP-6366f1?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.11-3b82f6?style=flat-square)
