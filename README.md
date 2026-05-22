@@ -1,6 +1,6 @@
-# PyScheduler — Python Job Orchestrator
+# PyScheduler — Orquestrador de Jobs Python
 
-A professional MVP SaaS system for scheduling and orchestrating Python scripts, built with FastAPI, APScheduler, React, and PostgreSQL.
+Sistema MVP SaaS profissional para agendamento e orquestração de scripts Python, construído com FastAPI, APScheduler, React e Supabase (PostgreSQL).
 
 ![Dashboard](https://img.shields.io/badge/status-MVP-6366f1?style=flat-square)
 ![Python](https://img.shields.io/badge/python-3.11-3b82f6?style=flat-square)
@@ -9,79 +9,73 @@ A professional MVP SaaS system for scheduling and orchestrating Python scripts, 
 
 ---
 
-## Features
+## Funcionalidades
 
-- **Job Management** — Create, edit, duplicate, pause, resume, delete scheduled jobs
-- **Multiple Schedule Types** — Cron expressions, intervals, daily, weekly, monthly, one-time
-- **Python Executor** — Run scripts in isolated subprocesses with timeout, stdout/stderr capture, and retry logic
-- **Real-time Logs** — WebSocket streaming of execution output with terminal-style viewer
-- **Execution History** — Complete audit trail with status, duration, exit code, and full logs
-- **Dashboard** — Metrics, success rate, timeline, system health
-- **Retry System** — Configurable max retries with delay
-- **JWT Auth** — Secure login/logout with access + refresh tokens
-- **Dark Mode UI** — Professional dark theme inspired by Linear, Vercel, and Railway
+- **Gerenciamento de Jobs** — Crie, edite, duplique, pause, retome e delete jobs agendados
+- **Múltiplos Tipos de Agendamento** — Expressões cron, intervalos, diário, semanal, mensal, execução única
+- **Executor Python** — Roda scripts em subprocessos isolados com timeout, captura de stdout/stderr e lógica de retry
+- **Logs em Tempo Real** — Streaming via WebSocket com visualizador estilo terminal
+- **Histórico de Execuções** — Trilha completa com status, duração, código de saída e logs completos
+- **Dashboard** — Métricas, taxa de sucesso, timeline e saúde do sistema
+- **Sistema de Retry** — Máximo de tentativas e delay configuráveis
+- **Autenticação JWT** — Login/logout seguro com tokens de acesso e refresh
+- **Interface Dark Mode** — Tema escuro profissional inspirado no Linear, Vercel e Railway
 
 ---
 
-## Quick Start (Docker)
+## Início Rápido (Docker)
 
 ```bash
-# Clone and start
+# Clone e inicie
 git clone <repo>
 cd python-scheduler
 
-# Copy environment file
+# Copie o arquivo de ambiente
 cp .env.example .env
+# Edite o .env com suas credenciais do Supabase
 
-# Start everything
+# Suba tudo
 docker-compose up --build
 ```
 
-The system will:
-1. Start PostgreSQL
-2. Run the backend (creates tables + seeds example data)
-3. Start the frontend
+O sistema irá:
+1. Iniciar o backend (cria tabelas no Supabase + popula dados de exemplo)
+2. Iniciar o frontend
 
-**Access:**
+**Acesso:**
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
+- API do Backend: http://localhost:8000
+- Documentação da API: http://localhost:8000/docs
 
-**Default credentials:**
+**Credenciais padrão:**
 ```
 Email:    admin@scheduler.local
-Password: admin123
+Senha:    admin123
 ```
 
 ---
 
-## Local Development
+## Desenvolvimento Local
 
 ### Backend
 
 ```bash
 cd backend
 
-# Create virtualenv
+# Crie o virtualenv
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install dependencies
+# Instale as dependências
 pip install -r requirements.txt
 
-# Start PostgreSQL (Docker)
-docker run -d \
-  --name scheduler_db \
-  -e POSTGRES_USER=scheduler \
-  -e POSTGRES_PASSWORD=scheduler123 \
-  -e POSTGRES_DB=scheduler_db \
-  -p 5432:5432 \
-  postgres:16-alpine
+# Configure o .env com as URLs do Supabase
+cp ../.env.example ../.env
 
-# Run seed
+# Popule os dados iniciais
 python seed.py
 
-# Start server
+# Inicie o servidor
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -97,137 +91,139 @@ npm run dev
 
 ---
 
-## Architecture
+## Arquitetura
 
 ```
 python-scheduler/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI app + lifespan hooks
-│   │   ├── api/routes/          # REST endpoints + WebSocket
-│   │   ├── core/                # Config, DB, JWT security
-│   │   ├── models/              # SQLAlchemy ORM models
-│   │   ├── schemas/             # Pydantic DTOs
-│   │   ├── repositories/        # Data access layer
-│   │   ├── services/            # Business logic
-│   │   ├── scheduler/           # APScheduler setup + sync
-│   │   └── executor/            # Python subprocess executor + WS manager
-│   ├── scripts/                 # Example Python scripts
-│   └── seed.py                  # Initial data
+│   │   ├── main.py              # App FastAPI + hooks de ciclo de vida
+│   │   ├── api/routes/          # Endpoints REST + WebSocket
+│   │   ├── core/                # Config, banco de dados, segurança JWT
+│   │   ├── models/              # Modelos ORM SQLAlchemy
+│   │   ├── schemas/             # DTOs Pydantic
+│   │   ├── repositories/        # Camada de acesso a dados
+│   │   ├── services/            # Regras de negócio
+│   │   ├── scheduler/           # Configuração do APScheduler + sincronização
+│   │   └── executor/            # Executor de subprocessos Python + gerenciador WS
+│   ├── scripts/                 # Scripts Python de exemplo
+│   └── seed.py                  # Dados iniciais
 └── frontend/
     └── src/
-        ├── pages/               # Login, Dashboard, Jobs, Executions, Logs, Monitoring, Settings
-        ├── components/          # Reusable UI components
-        ├── hooks/               # React Query hooks
-        ├── stores/              # Zustand auth store
-        └── lib/                 # API client, utilities
+        ├── pages/               # Login, Dashboard, Jobs, Execuções, Logs, Monitoramento, Configurações
+        ├── components/          # Componentes de UI reutilizáveis
+        ├── hooks/               # Hooks do React Query
+        ├── stores/              # Store de autenticação (Zustand)
+        └── lib/                 # Cliente API, utilitários
 ```
 
 ---
 
-## Tech Stack
+## Stack Tecnológica
 
-| Layer | Technology |
-|-------|-----------|
+| Camada | Tecnologia |
+|--------|-----------|
 | Frontend | React 18 + Vite 5 + TypeScript |
-| Styling | TailwindCSS + shadcn/ui |
-| State | TanStack Query v5 + Zustand v4 |
+| Estilização | TailwindCSS + shadcn/ui |
+| Estado | TanStack Query v5 + Zustand v4 |
 | Backend | FastAPI 0.109 + Python 3.11 |
-| Database | PostgreSQL 16 + SQLAlchemy 2 async |
-| Scheduler | APScheduler 3.10 (SQLAlchemy job store) |
-| Auth | JWT (python-jose + passlib/bcrypt) |
-| Real-time | WebSocket (FastAPI native) |
+| Banco de Dados | Supabase (PostgreSQL 16) + SQLAlchemy 2 async |
+| Scheduler | APScheduler 3.10 (MemoryJobStore) |
+| Autenticação | JWT (python-jose + passlib/bcrypt) |
+| Tempo Real | WebSocket (nativo FastAPI) |
 | Container | Docker + Docker Compose |
 
 ---
 
-## API Overview
+## Visão Geral da API
 
 ```
 POST   /api/auth/login
 POST   /api/auth/refresh
 GET    /api/auth/me
 
-GET    /api/jobs                   List + filter + search
-POST   /api/jobs                   Create job
+GET    /api/jobs                   Listar + filtrar + buscar
+POST   /api/jobs                   Criar job
 GET    /api/jobs/{id}
 PUT    /api/jobs/{id}
 DELETE /api/jobs/{id}
-POST   /api/jobs/{id}/run          Manual trigger
+POST   /api/jobs/{id}/run          Trigger manual
 POST   /api/jobs/{id}/pause
 POST   /api/jobs/{id}/resume
 POST   /api/jobs/{id}/duplicate
 
-GET    /api/executions             List executions
+GET    /api/executions             Listar execuções
 GET    /api/executions/{id}
 POST   /api/executions/{id}/cancel
 GET    /api/executions/{id}/logs
+
+GET    /api/scripts                Listar scripts disponíveis
+POST   /api/scripts/upload         Upload de script .py
 
 GET    /api/dashboard/metrics
 GET    /api/dashboard/timeline
 
 GET    /api/logs/export?execution_id=...
 
-WS     /ws/executions/{id}         Real-time log stream
+WS     /ws/executions/{id}         Stream de logs em tempo real
 
 GET    /api/health
 ```
 
-Full interactive docs available at `http://localhost:8000/docs`.
+Documentação interativa completa disponível em `http://localhost:8000/docs`.
 
 ---
 
-## Adding Python Scripts
+## Adicionando Scripts Python
 
-Place `.py` files in `backend/scripts/`. The scheduler will look for scripts relative to the `SCRIPTS_DIR` (default: `./scripts`).
+Coloque arquivos `.py` em `backend/scripts/` ou faça upload diretamente pela interface ao criar um job. O executor procura os scripts relativos ao `SCRIPTS_DIR` (padrão: `./scripts`).
 
-Example:
+Exemplo:
 ```python
-# backend/scripts/my_job.py
+# backend/scripts/meu_job.py
 import sys
-print("Starting my job...")
-# ... your logic
-sys.exit(0)  # exit 0 = success, any other code = failure
+print("Iniciando meu job...")
+# ... sua lógica aqui
+sys.exit(0)  # saída 0 = sucesso, qualquer outro código = falha
 ```
 
-Then create a job in the UI with script path `my_job.py`.
+Depois crie um job na interface com o caminho do script `meu_job.py`.
 
 ---
 
-## Environment Variables
+## Variáveis de Ambiente
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DATABASE_URL` | postgresql+asyncpg://… | Async DB URL |
-| `DATABASE_SYNC_URL` | postgresql://… | Sync DB URL (APScheduler) |
-| `SECRET_KEY` | — | JWT signing key (change in prod!) |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | 30 | Access token TTL |
-| `REFRESH_TOKEN_EXPIRE_DAYS` | 7 | Refresh token TTL |
-| `SCRIPTS_DIR` | ./scripts | Directory for Python scripts |
-| `MAX_CONCURRENT_EXECUTIONS` | 5 | Execution concurrency limit |
-| `CORS_ORIGINS` | http://localhost:5173 | Allowed CORS origins |
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `DATABASE_URL` | postgresql+asyncpg://… | URL do banco (async, via PgBouncer session mode) |
+| `DATABASE_SYNC_URL` | postgresql://… | URL do banco (sync, para Alembic) |
+| `SECRET_KEY` | — | Chave de assinatura JWT (troque em produção!) |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | 30 | Tempo de vida do token de acesso |
+| `REFRESH_TOKEN_EXPIRE_DAYS` | 7 | Tempo de vida do refresh token |
+| `SCRIPTS_DIR` | ./scripts | Diretório dos scripts Python |
+| `MAX_CONCURRENT_EXECUTIONS` | 5 | Limite de execuções simultâneas |
+| `CORS_ORIGINS` | http://localhost:5173 | Origens permitidas pelo CORS |
 
 ---
 
-## Production Checklist
+## Checklist para Produção
 
-- [ ] Change `SECRET_KEY` to a strong random value
-- [ ] Use strong database password
-- [ ] Enable HTTPS (reverse proxy: nginx/Caddy)
-- [ ] Set `CORS_ORIGINS` to your actual frontend domain
-- [ ] Mount a persistent volume for `backend/scripts`
-- [ ] Set up database backups
-- [ ] Configure log retention policy
+- [ ] Troque o `SECRET_KEY` por um valor aleatório forte
+- [ ] Use senha forte no banco de dados
+- [ ] Habilite HTTPS (proxy reverso: nginx/Caddy)
+- [ ] Defina `CORS_ORIGINS` com o domínio real do frontend
+- [ ] Monte volume persistente para `backend/scripts`
+- [ ] Configure backups do banco de dados
+- [ ] Configure política de retenção de logs
 
 ---
 
 ## Roadmap
 
-- [ ] Email / Slack notifications on failure
-- [ ] Multi-tenant support
-- [ ] Script upload via UI
-- [ ] Environment variable management UI
-- [ ] Execution resource monitoring (CPU/memory)
-- [ ] Distributed workers
-- [ ] Container-based execution (Docker)
-- [ ] Metrics export (Prometheus)
+- [ ] Notificações por e-mail / Slack em caso de falha
+- [ ] Suporte multi-tenant
+- [ ] Gerenciamento de variáveis de ambiente pela interface
+- [ ] Monitoramento de recursos de execução (CPU/memória)
+- [ ] Workers distribuídos
+- [ ] Execução baseada em containers (Docker)
+- [ ] Exportação de métricas (Prometheus)
